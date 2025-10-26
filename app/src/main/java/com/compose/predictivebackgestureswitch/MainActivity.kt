@@ -1,47 +1,32 @@
 package com.compose.predictivebackgestureswitch
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.compose.predictivebackgestureswitch.ui.theme.PredictiveBackGestureSwitchTheme
+import com.compose.predictivebackgestureswitch.activity.MainActivityNoGesture
+import com.compose.predictivebackgestureswitch.activity.MainActivityUseGesture
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            PredictiveBackGestureSwitchTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+
+        val sharedPreferences = getSharedPreferences("app_settings", MODE_PRIVATE)
+        val useGesture = sharedPreferences.getBoolean("use_gesture", true) // 默认启用手势
+
+        val targetActivity = if (useGesture) {
+            MainActivityUseGesture::class.java
+        } else {
+            MainActivityNoGesture::class.java
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        val targetIntent = Intent(this, targetActivity).apply {
+            // 传递原始 Intent 的数据
+            action = intent.action
+            data = intent.data
+            intent.extras?.let { putExtras(it) }
+        }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PredictiveBackGestureSwitchTheme {
-        Greeting("Android")
+        startActivity(targetIntent)
+        finish() // 结束当前 Activity
     }
 }
