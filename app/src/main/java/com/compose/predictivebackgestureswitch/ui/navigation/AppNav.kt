@@ -15,9 +15,11 @@ fun AppNav() {
         navController = navController,
         startDestination = "home"
     ) {
+        // Home：包含手势开关与导航按钮
         composable("home") {
             MainContent(navController)
         }
+        // Blank：演示跳转到一个空白页面
         composable("blank") {
             BlankScreen()
         }

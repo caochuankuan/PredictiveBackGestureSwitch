@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun BlankScreen() {
+    // 一个简单的空白页，用于演示导航
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

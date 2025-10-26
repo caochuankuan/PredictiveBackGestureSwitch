@@ -10,6 +10,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // 根据 SharedPreferences 中的 use_gesture 决定跳转到不同 Activity：
         val sharedPreferences = getSharedPreferences("app_settings", MODE_PRIVATE)
         val useGesture = sharedPreferences.getBoolean("use_gesture", true) // 默认启用手势
 
@@ -19,6 +20,7 @@ class MainActivity : ComponentActivity() {
             MainActivityNoGesture::class.java
         }
 
+        // 保留原始 Intent 的数据，确保外部唤起行为不丢失
         val targetIntent = Intent(this, targetActivity).apply {
             // 传递原始 Intent 的数据
             action = intent.action

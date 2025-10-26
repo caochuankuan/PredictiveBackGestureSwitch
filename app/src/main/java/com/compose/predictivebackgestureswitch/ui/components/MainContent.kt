@@ -39,8 +39,8 @@ fun MainContent(navController: NavHostController) {
     val scope = rememberCoroutineScope()
     var useGesture by remember { mutableStateOf(true) }
 
+    // 首次进入时从 SharedPreferences 加载已保存的手势设置
     LaunchedEffect(Unit) {
-        // Load gesture setting
         val sharedPreferences = context.getSharedPreferences("app_settings", MODE_PRIVATE)
         useGesture = sharedPreferences.getBoolean("use_gesture", true)
     }
@@ -79,20 +79,24 @@ fun MainContent(navController: NavHostController) {
                     Toast.makeText(context, "即将重启以应用设置", Toast.LENGTH_SHORT).show()
 
                     scope.launch {
+                        // 等待 1 秒，便于用户看清提示
                         delay(1000)
                         val restartIntent = Intent(
                             context,
                             com.compose.predictivebackgestureswitch.MainActivity::class.java
                         ).apply {
+                            // 使用 CLEAR_TASK + NEW_TASK 确保新设置的目标页成为根页面
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         }
                         context.startActivity(restartIntent)
+                        // 结束当前任务栈，避免旧页面残留
                         (context as? Activity)?.finishAffinity()
                     }
                 }
             )
         }
 
+        // 导航示例按钮：点击跳转到空白页（BlankScreen）
         androidx.compose.material3.Button(onClick = { navController.navigate("blank") }) {
             Text(text = "Navigate to Blank Screen")
         }
